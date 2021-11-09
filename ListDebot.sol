@@ -21,7 +21,10 @@ abstract contract ListDebot is Debot, Upgradable {
     uint32 m_price;
     uint32 m_number;
     string m_string;
+
     TvmCell m_listCode; // List contract code
+    TvmCell m_listData; 
+    TvmCell m_listStateInit;
     address m_address;  // List contract address
     ShoppingSammari m_stat;        // Statistics of incompleted and completed 
     uint32 m_taskId;    // Task id for update. I didn't find a way to make this var local
@@ -31,10 +34,12 @@ abstract contract ListDebot is Debot, Upgradable {
     uint32 INITIAL_BALANCE =  200000000;  // Initial List contract balance
 
         //функция setTListCode с проверкой для получения переменной m_listCode
-    function setListCode(TvmCell code) public {
+    function setListCode(TvmCell code, TvmCell data) public {
         require(msg.pubkey() == tvm.pubkey(), 101);
         tvm.accept();
         m_listCode = code;
+        m_listData = data;
+        m_listStateInit = tvm.buildStateInit(m_listCode, m_listData);
     }
 
 
@@ -88,7 +93,8 @@ abstract contract ListDebot is Debot, Upgradable {
 
             Terminal.print(0, "Checking if you already have a Shopping list ...");
              // метод insertPubkey добавляет к m_listCode публичный ключ m_masterPubKey и сохраняем в переменной deployState
-            TvmCell deployState = tvm.insertPubkey(m_listCode, m_masterPubKey);
+            // TvmCell deployState = tvm.insertPubkey(m_listCode, m_masterPubKey);
+            TvmCell deployState = tvm.insertPubkey(m_listStateInit, m_masterPubKey);
             //в переменную сохраняем адрес, обратившись к хэшу deployState
             m_address = address.makeAddrStd(0, tvm.hash(deployState));
             //передаем в Terminal информацию для вывода
@@ -175,7 +181,8 @@ abstract contract ListDebot is Debot, Upgradable {
     function deploy() private view {
         // метод insertPubkey добавляет к m_todoCode публичный ключ m_masterPubKey и сохраняем в переменной image
         // формирование образа
-            TvmCell image = tvm.insertPubkey(m_listCode, m_masterPubKey);
+            //TvmCell image = tvm.insertPubkey(m_listCode, m_masterPubKey);
+            TvmCell image = tvm.insertPubkey(m_listStateInit, m_masterPubKey);
             optional(uint256) none;
             TvmCell deployMsg = tvm.buildExtMsg({ // в фигурных скобках дополнительные параметры
                 abiVer: 2,

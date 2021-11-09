@@ -44,7 +44,7 @@ contract ShopDebot is ListDebot{
 
     function buy__(string value) public view {
         (uint256 num,) = stoi(value);
-        m_price = uint32(num);
+        //m_price = uint32(num);
         optional(uint256) pubkey = 0;
         ITodo(m_address).buy{
                 abiVer: 2,
