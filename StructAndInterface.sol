@@ -9,13 +9,13 @@ struct Shopping { // структура Покупка
         uint32 quantity; // количество
         uint64 createdAt; // когда заведена покупка, время или дата
         bool isBought; // куплено
-        uint price; //цена, за которую купили  [за все единиицы сразу] 
+        uint32 price; //цена, за которую купили  [за все единиицы сразу] 
 }
 
 struct ShoppingSammari { //структура Саммари покупок
         uint32 completeCount; // оплаченные покупки (предметы, количество)
         uint32 incompleteCount; // неоплаченные покупки (предметы, количество)
-        uint totalPrice; // сумма покупок
+        uint32 totalPrice; // сумма покупок
 }
 
 interface IMsig {
@@ -30,8 +30,9 @@ abstract contract HasConstructorWithPubKey {
 
 // интерфейс ITodo, в котором представлены методы, д.б. реализованы  в классах-наследниках
 interface ITodo {
-   function createShopping(string name, uint32 quantity, uint price) external;
-   function buy(uint32 id, uint price, bool done) external;
+   function createShopping(string name, uint32 quantity) external;
+   function buy(uint32 id, uint price) external;
    function deleteShopping(uint32 id) external;
+   function getShopping() external returns (Shopping[] tasks);
    function getStat() external returns (ShoppingSammari);
 }
